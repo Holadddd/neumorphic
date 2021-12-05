@@ -21,8 +21,9 @@ public struct SoftDynamicButtonStyle<S: Shape> : ButtonStyle {
     var lightShadowColor : Color
     var pressedEffect : SoftButtonPressedEffect
     var padding : CGFloat
+    var isPressed: Bool?
     
-    public init(_ shape: S, mainColor : Color, textColor : Color, darkShadowColor: Color, lightShadowColor: Color, pressedEffect : SoftButtonPressedEffect, padding : CGFloat = 16) {
+    public init(_ shape: S, mainColor : Color, textColor : Color, darkShadowColor: Color, lightShadowColor: Color, pressedEffect : SoftButtonPressedEffect, padding : CGFloat = 16, isPressed: Bool?) {
         self.shape = shape
         self.mainColor = mainColor
         self.textColor = textColor
@@ -30,31 +31,33 @@ public struct SoftDynamicButtonStyle<S: Shape> : ButtonStyle {
         self.lightShadowColor = lightShadowColor
         self.pressedEffect = pressedEffect
         self.padding = padding
+        self.isPressed = isPressed
     }
     
     public func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
                 .foregroundColor(textColor)
                 .padding(padding)
-                .scaleEffect(configuration.isPressed ? 0.97 : 1)
+                .scaleEffect((isPressed ?? configuration.isPressed) ? 0.97 : 1)
                 .background(
                     ZStack{
                         if pressedEffect == .flat {
-                            shape.stroke(darkShadowColor, lineWidth : configuration.isPressed ? 1 : 0)
-                            .opacity(configuration.isPressed ? 1 : 0)
+                            shape.stroke(darkShadowColor, lineWidth : (isPressed ?? configuration.isPressed) ? 1 : 0)
+                            .opacity((isPressed ?? configuration.isPressed) ? 1 : 0)
                             shape.fill(mainColor)
                         }
                         else if pressedEffect == .hard {
                             shape.fill(mainColor)
                                 .softInnerShadow(shape, darkShadow: darkShadowColor, lightShadow: lightShadowColor, spread: 0.15, radius: 3)
-                                .opacity(configuration.isPressed ? 1 : 0)
+                                .opacity((isPressed ?? configuration.isPressed) ? 1 : 0)
                         }
                         
                         shape.fill(mainColor)
                             .softOuterShadow(darkShadow: darkShadowColor, lightShadow: lightShadowColor, offset: 6, radius: 3)
-                            .opacity(pressedEffect == .none ? 1 : (configuration.isPressed ? 0 : 1) )
+                            .opacity(pressedEffect == .none ? 1 : ((isPressed ?? configuration.isPressed) ? 0 : 1) )
                     }
                 )
+                
     }
     
 }
@@ -99,8 +102,9 @@ public struct SoftButtonStyle<S: Shape> : ButtonStyle {
 
 extension Button {
 
-    public func softButtonStyle<S : Shape>(_ content: S, padding : CGFloat = 16, mainColor : Color = Color.Neumorphic.main, textColor : Color = Color.Neumorphic.secondary, darkShadowColor: Color = Color.Neumorphic.darkShadow, lightShadowColor: Color = Color.Neumorphic.lightShadow, pressedEffect : SoftButtonPressedEffect = .hard) -> some View {
-        self.buttonStyle(SoftDynamicButtonStyle(content, mainColor: mainColor, textColor: textColor, darkShadowColor: darkShadowColor, lightShadowColor: lightShadowColor, pressedEffect : pressedEffect, padding:padding))
+    public func softButtonStyle<S : Shape>(_ content: S, padding : CGFloat = 16, mainColor : Color = Color.Neumorphic.main, textColor : Color = Color.Neumorphic.secondary, darkShadowColor: Color = Color.Neumorphic.darkShadow, lightShadowColor: Color = Color.Neumorphic.lightShadow, pressedEffect : SoftButtonPressedEffect = .hard, isPressed: Bool? = nil) -> some View {
+        
+        self.buttonStyle(SoftDynamicButtonStyle(content, mainColor: mainColor, textColor: textColor, darkShadowColor: darkShadowColor, lightShadowColor: lightShadowColor, pressedEffect : pressedEffect, padding:padding, isPressed: isPressed))
     }
 
     

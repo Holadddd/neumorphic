@@ -8,7 +8,10 @@
 import SwiftUI
 import Neumorphic
 
-struct ContentView: View {    
+struct ContentView: View {
+    
+    @State var buttonIsPressed: Bool = false
+    
     var body: some View {
         let cornerRadius : CGFloat = 15
         let mainColor = Color.Neumorphic.main
@@ -58,9 +61,18 @@ struct ContentView: View {
                 }
                 
                 //You can simply create soft button with softButtonStyle method.
-                Button(action: {}) {
-                    Text("Soft Button").fontWeight(.bold)
-                }.softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
+                HStack {
+                    Button(action: {}) {
+                        Text("Soft Button").fontWeight(.bold)
+                    }.softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
+                    
+                    Button(action: {
+                        buttonIsPressed.toggle()
+                    }) {
+                        Text("Soft Button").fontWeight(.bold)
+                    }.softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius), isPressed: buttonIsPressed)
+                }
+                
                 
                 HStack(spacing: 20) {
                     //Circle Button
