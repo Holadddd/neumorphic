@@ -38,23 +38,23 @@ public struct SoftDynamicButtonStyle<S: Shape> : ButtonStyle {
             configuration.label
                 .foregroundColor(textColor)
                 .padding(padding)
-                .scaleEffect((isPressed ?? configuration.isPressed) ? 0.97 : 1)
+                .scaleEffect(configuration.isPressed ? 0.97 : (isPressed ?? configuration.isPressed) ? 0.97 : 1)
                 .background(
                     ZStack{
                         if pressedEffect == .flat {
-                            shape.stroke(darkShadowColor, lineWidth : (isPressed ?? configuration.isPressed) ? 1 : 0)
-                            .opacity((isPressed ?? configuration.isPressed) ? 1 : 0)
+                            shape.stroke(darkShadowColor, lineWidth : (configuration.isPressed ? 1 : (isPressed ?? configuration.isPressed) ? 1 : 0))
+                            .opacity(configuration.isPressed ? 1 : (isPressed ?? configuration.isPressed) ? 1 : 0)
                             shape.fill(mainColor)
                         }
                         else if pressedEffect == .hard {
                             shape.fill(mainColor)
                                 .softInnerShadow(shape, darkShadow: darkShadowColor, lightShadow: lightShadowColor, spread: 0.15, radius: 3)
-                                .opacity((isPressed ?? configuration.isPressed) ? 1 : 0)
+                                .opacity(configuration.isPressed ? 1 : (isPressed ?? configuration.isPressed) ? 1 : 0)
                         }
                         
                         shape.fill(mainColor)
                             .softOuterShadow(darkShadow: darkShadowColor, lightShadow: lightShadowColor, offset: 6, radius: 3)
-                            .opacity(pressedEffect == .none ? 1 : ((isPressed ?? configuration.isPressed) ? 0 : 1) )
+                            .opacity(pressedEffect == .none ? 1 : configuration.isPressed ? 0 : (isPressed ?? configuration.isPressed) ? 0 : 1 )
                     }
                 )
                 
